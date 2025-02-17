@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %} Створити папку {% endblock %}
+
+{% block content %}
+    <form method="POST">
+    {{ form.hidden_tag() }}
+    <label for="name">Назва папки:</label>
+    {{ form.name() }}
+    {{ form.submit() }}
+</form>
+{% endblock %}

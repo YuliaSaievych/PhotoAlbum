@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %} Галерея {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Галерея</h2>
+
+    <!-- Навігація по папках -->
+    <nav>
+        {% if current_folder and current_folder.parent_id %}
+            <a href="{{ url_for('photo.gallery', folder_id=current_folder.parent_id) }}" class="btn btn-secondary">
+                ⬅ Назад
+            </a>
+        {% endif %}
+        <a href="{{ url_for('photo.create_folder', parent_id=current_folder.id if current_folder else None) }}"
+           class="btn btn-primary">
+            ➕ Створити папку
+        </a>
+        <a href="{{ url_for('photo.upload_photo') }}" class="btn btn-success">
+            📤 Завантажити фото
+        </a>
+    </nav>
+
+    <!-- Відображення папок -->
+    {% if folders %}
+        <h3>Папки</h3>
+        <div class="row">
+            {% for folder in folders %}
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <a href="{{ url_for('photo.gallery', folder_id=folder.id) }}" class="btn btn-outline-primary">
+                                📂 {{ folder.name }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Відображення фотографій -->
+    {% if photos %}
+        <h3>Фото</h3>
+        <div class="row">
+            {% for photo in photos %}
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <img src="{{ photo.filename }}" class="card-img-top" alt="Фото" onerror="this.style.display='none'">
+                        <div class="card-body">
+                            <a href="{{ photo.filename }}" target="_blank" class="btn btn-sm btn-outline-info">
+                                🔗 Посилання
+                            </a>
+                            <form action="{{ url_for('photo.delete_photo', photo_id=photo.id) }}" method="POST"
+                                  style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger">🗑 Видалити</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Ще немає фото або папок. <a href="{{ url_for('photo.upload_photo') }}">Завантаж своє перше фото!</a></p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}User Information{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+    <br><br>
+    <h2>User Information</h2>
+
+    <p>Welcome, {{ current_user.username }}!</p>
+    <p>Email: {{ current_user.email }}</p>
+
+    <div style="display: flex; gap: 25px; allign-items: flex-start">
+        {% if user_data.image_file %}
+            <img style="height: 150px;" src="{{ url_for('static', filename='/images/' + user_data.image_file) }}">
+        {% else %}
+            <p>No profile image available</p><br>
+        {% endif %}
+        <br>
+        </h1>
+    </div>
+
+    {% if is_friend %}
+    <form action="{{ url_for('friend.remove_friend', friend_id=user.id) }}" method="POST">
+        <button type="submit" class="btn btn-danger">Видалити з друзів</button>
+    </form>
+{% elif is_pending %}
+    <button class="btn btn-secondary" disabled>Запит надіслано</button>
+{% else %}
+    <form action="{{ url_for('friend.add_friend', user_id=user.id) }}" method="POST">
+        <button type="submit" class="btn btn-primary">Додати у друзі</button>
+    </form>
+{% endif %}
+
+
+    <a href="{{ url_for('user.change_data') }}">
+        <button>Налаштування</button>
+    </a>
+    <br>
+
+    <br>
+
+{% endblock %}
