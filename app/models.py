@@ -1,3 +1,4 @@
+import hashlib
 import os
 
 from flask import current_app
@@ -5,6 +6,8 @@ from flask_login import UserMixin
 from itsdangerous import URLSafeTimedSerializer
 
 from app import db, bcrypt
+from flask import url_for
+
 
 
 class User(db.Model, UserMixin):
@@ -44,6 +47,10 @@ class User(db.Model, UserMixin):
         if not os.path.exists(user_folder):
             os.makedirs(user_folder)
 
+    def get_friend_invite_link(self):
+        unique_token = hashlib.md5(f"{self.id}-{self.email}".encode()).hexdigest()
+        return url_for('friend.invite_friend', token=unique_token, _external=True)
+
 
 class Photo(db.Model):
     __tablename__ = 'photo'
@@ -75,3 +82,21 @@ class Folder(db.Model):
             db.session.add(main_folder)
             db.session.commit()
             create_folder_in_bunny(main_folder.path)
+
+
+class Friend(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    friend_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    status = db.Column(db.String(20), default="pending")  # "pending", "accepted"
+
+    user = db.relationship('User', foreign_keys=[user_id], backref='friend_requests_sent')
+    friend = db.relationship('User', foreign_keys=[friend_id], backref='friend_requests_received')
+
+    def accept(self):
+        self.status = "accepted"
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()

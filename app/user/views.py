@@ -43,6 +43,7 @@ def account():
     return render_template('account.html',
                            data=data,
                            user_data=user_data,
+                           user=user_data,
                            os_info=os.name,
                            user_agent="Sample User Agent",
                            current_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),

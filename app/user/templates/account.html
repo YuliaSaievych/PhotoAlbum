@@ -11,34 +11,39 @@
     <p>Welcome, {{ current_user.username }}!</p>
     <p>Email: {{ current_user.email }}</p>
 
-    <div style="display: flex; gap: 25px; allign-items: flex-start">
+    <div style="display: flex; gap: 25px; align-items: flex-start">
         {% if user_data.image_file %}
             <img style="height: 150px;" src="{{ url_for('static', filename='/images/' + user_data.image_file) }}">
         {% else %}
             <p>No profile image available</p><br>
         {% endif %}
         <br>
-        </h1>
     </div>
 
-    {% if is_friend %}
-    <form action="{{ url_for('friend.remove_friend', friend_id=user.id) }}" method="POST">
-        <button type="submit" class="btn btn-danger">Видалити з друзів</button>
-    </form>
-{% elif is_pending %}
-    <button class="btn btn-secondary" disabled>Запит надіслано</button>
-{% else %}
-    <form action="{{ url_for('friend.add_friend', user_id=user.id) }}" method="POST">
-        <button type="submit" class="btn btn-primary">Додати у друзі</button>
-    </form>
-{% endif %}
+    <p>Поділіться цим посиланням, щоб додати у друзі:</p>
+    <input type="text" value="{{ user_data.get_friend_invite_link() }}" readonly>
+    <button onclick="copyToClipboard()">Скопіювати</button>
 
+    <br><br>
+
+    <h3>Друзі:</h3>
+    <ul>
+        {% if friends %}
+            {% for friend in friends %}
+                <li>
+                    <a href="{{ url_for('user.profile', user_id=friend.id) }}">{{ friend.username }}</a>
+                    <form action="{{ url_for('friend.remove_friend', friend_id=friend.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm">Видалити</button>
+                    </form>
+                </li>
+            {% endfor %}
+        {% else %}
+            <p>У вас поки що немає друзів.</p>
+        {% endif %}
+    </ul>
 
     <a href="{{ url_for('user.change_data') }}">
         <button>Налаштування</button>
     </a>
-    <br>
-
-    <br>
 
 {% endblock %}

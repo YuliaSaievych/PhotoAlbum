@@ -1,31 +1,46 @@
+import hashlib
+
 from flask import redirect, url_for, flash
 from flask_login import current_user, login_required
 
 import app
-from app.friends import friends_bp
-from app.models import Friend
+from app.friend import friend_bp
+from app.models import Friend, User
 
 
-@friends_bp.route('/add_friend/<int:user_id>', methods=['POST'])
+@friend_bp.route('/invite_friend/<string:token>', methods=['GET'])
 @login_required
-def add_friend(user_id):
-    if current_user.id == user_id:
+def invite_friend(token):
+    users = User.query.all()
+
+    invited_user = None
+    for user in users:
+        expected_token = hashlib.md5(f"{user.id}-{user.email}".encode()).hexdigest()
+        if expected_token == token:
+            invited_user = user
+            break
+
+    if not invited_user:
+        flash("Невірне посилання!", "danger")
+        return redirect(url_for('main.index'))
+
+    if current_user.id == invited_user.id:
         flash("Ви не можете додати себе у друзі!", "danger")
         return redirect(url_for('main.index'))
 
-    existing_request = Friend.query.filter_by(user_id=current_user.id, friend_id=user_id).first()
+    existing_request = Friend.query.filter_by(user_id=current_user.id, friend_id=invited_user.id).first()
     if existing_request:
         flash("Запит вже надіслано!", "warning")
     else:
-        new_friend = Friend(user_id=current_user.id, friend_id=user_id)
+        new_friend = Friend(user_id=current_user.id, friend_id=invited_user.id)
         app.db.session.add(new_friend)
         app.db.session.commit()
         flash("Запит у друзі надіслано!", "success")
 
-    return redirect(url_for('user.profile', user_id=user_id))
+    return redirect(url_for('user.account', user_id=invited_user.id))
 
 
-@friends_bp.route('/accept_friend/<int:friend_id>', methods=['POST'])
+@friend_bp.route('/accept_friend/<int:friend_id>', methods=['POST'])
 @login_required
 def accept_friend(friend_id):
     friend_request = Friend.query.filter_by(user_id=friend_id, friend_id=current_user.id, status="pending").first()
@@ -39,7 +54,7 @@ def accept_friend(friend_id):
     return redirect(url_for('user.profile', user_id=friend_id))
 
 
-@friends_bp.route('/remove_friend/<int:friend_id>', methods=['POST'])
+@friend_bp.route('/remove_friend/<int:friend_id>', methods=['POST'])
 @login_required
 def remove_friend(friend_id):
     friend = Friend.query.filter(

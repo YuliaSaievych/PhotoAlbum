@@ -57,8 +57,8 @@ def create_app():
     from .photo import photo_bp
     app.register_blueprint(photo_bp, url_prefix='/photo')
 
-    from .friends import friends_bp
-    app.register_blueprint(friends_bp)
+    from .friend import friend_bp
+    app.register_blueprint(friend_bp)
 
     print("App setup complete, returning app instance...")
     return app

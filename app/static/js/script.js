@@ -29,3 +29,10 @@ letters.forEach(letter => {
     const randomRotation = Math.random() * 30 - 15; // between -15 and 15 degrees
     letter.style.transform = `rotate(${randomRotation}deg)`;
 });
+
+function copyToClipboard() {
+        var copyText = document.querySelector("input");
+        copyText.select();
+        document.execCommand("copy");
+        alert("Посилання скопійоване!");
+    }
