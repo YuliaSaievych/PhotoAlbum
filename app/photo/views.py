@@ -68,7 +68,6 @@ def upload_photo():
     form = UploadPhotoForm()
     folders = Folder.query.filter_by(user_id=current_user.id).all()
 
-    # Переконатися, що у користувача є "Основна" папка
     main_folder = Folder.query.filter_by(user_id=current_user.id, name="Основна").first()
     if not main_folder:
         main_folder = Folder(name="Основна", user_id=current_user.id, path="Основна")
@@ -79,10 +78,8 @@ def upload_photo():
         file = form.photo.data
         selected_folder_id = request.form.get("folder_id", type=int)
 
-        # Вибрана папка або "Основна" за замовчуванням
         selected_folder = Folder.query.get(selected_folder_id) if selected_folder_id else main_folder
 
-        # Завантажити фото в BunnyCDN
         folder_path = selected_folder.path
         create_folder_in_bunny(folder_path)
 
@@ -91,7 +88,6 @@ def upload_photo():
             file_url = upload_to_bunny(file.stream.read(), filename, folder_path)
 
             if file_url:
-                # Збереження фото в БД (основна папка + вибрана папка)
                 photo = Photo(filename=file_url, user_id=current_user.id, folder=selected_folder)
                 app.db.session.add(photo)
                 app.db.session.commit()

@@ -1,28 +1,30 @@
 {% extends 'base.html' %}
 
-{% block title %}User Information{% endblock %}
+{% block title %}Профіль користувача{% endblock %}
 
 {% block content %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 
     <br><br>
-    <h2>User Information</h2>
+    <h2>Профіль користувача</h2>
 
-    <p>Welcome, {{ current_user.username }}!</p>
-    <p>Email: {{ current_user.email }}</p>
+    <p>Ласкаво просимо, {{ user.username }}!</p>
+    <p>Email: {{ user.email }}</p>
 
     <div style="display: flex; gap: 25px; align-items: flex-start">
-        {% if user_data.image_file %}
-            <img style="height: 150px;" src="{{ url_for('static', filename='/images/' + user_data.image_file) }}">
+        {% if user.image_file %}
+            <img style="height: 150px;" src="{{ url_for('static', filename='/images/' + user.image_file) }}">
         {% else %}
-            <p>No profile image available</p><br>
+            <p>Фото профілю відсутнє</p><br>
         {% endif %}
         <br>
     </div>
 
-    <p>Поділіться цим посиланням, щоб додати у друзі:</p>
-    <input type="text" value="{{ user_data.get_friend_invite_link() }}" readonly>
-    <button onclick="copyToClipboard()">Скопіювати</button>
+    {% if is_own_profile %}
+        <p>Поділіться цим посиланням, щоб додати у друзі:</p>
+        <input type="text" value="{{ user.get_friend_invite_link() }}" readonly>
+        <button onclick="copyToClipboard()">Скопіювати</button>
+    {% endif %}
 
     <br><br>
 
@@ -31,19 +33,43 @@
         {% if friends %}
             {% for friend in friends %}
                 <li>
-                    <a href="{{ url_for('user.profile', user_id=friend.id) }}">{{ friend.username }}</a>
-                    <form action="{{ url_for('friend.remove_friend', friend_id=friend.id) }}" method="POST" style="display:inline;">
-                        <button type="submit" class="btn btn-danger btn-sm">Видалити</button>
-                    </form>
+                        <a href="{{ url_for('user.account', user_id=friend.id) }}">{{ friend.username }}</a>
+                    {% if is_own_profile %}
+                        <form action="{{ url_for('friend.remove_friend', friend_id=friend.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">Видалити з друзів</button>
+                        </form>
+                    {% endif %}
                 </li>
             {% endfor %}
         {% else %}
-            <p>У вас поки що немає друзів.</p>
+            <p>У цього користувача поки що немає друзів.</p>
         {% endif %}
     </ul>
 
-    <a href="{{ url_for('user.change_data') }}">
-        <button>Налаштування</button>
-    </a>
+    {% if is_own_profile %}
+        <h3>Запити у друзі:</h3>
+        <ul>
+            {% if friend_requests %}
+                {% for request in friend_requests %}
+                    <li>
+                        <a href="{{ url_for('user.account', user_id=request.id) }}">{{ request.username }}</a>
+                        <form action="{{ url_for('friend.accept_friend', friend_id=request.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-success btn-sm">Прийняти</button>
+                        </form>
+                        <form action="{{ url_for('friend.remove_friend', friend_id=request.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">Відхилити</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <p>Немає нових запитів у друзі.</p>
+            {% endif %}
+        </ul>
+    {% endif %}
 
+    {% if is_own_profile %}
+        <a href="{{ url_for('user.change_data') }}">
+            <button>Налаштування</button>
+        </a>
+    {% endif %}
 {% endblock %}

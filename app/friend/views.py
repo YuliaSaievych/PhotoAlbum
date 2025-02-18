@@ -22,11 +22,11 @@ def invite_friend(token):
 
     if not invited_user:
         flash("Невірне посилання!", "danger")
-        return redirect(url_for('main.index'))
+        return redirect(url_for('general.home'))
 
     if current_user.id == invited_user.id:
         flash("Ви не можете додати себе у друзі!", "danger")
-        return redirect(url_for('main.index'))
+        return redirect(url_for('general.home'))
 
     existing_request = Friend.query.filter_by(user_id=current_user.id, friend_id=invited_user.id).first()
     if existing_request:
@@ -47,11 +47,12 @@ def accept_friend(friend_id):
 
     if friend_request:
         friend_request.accept()
+        app.db.session.commit()
         flash("Запит у друзі прийнято!", "success")
     else:
         flash("Запит не знайдено!", "danger")
 
-    return redirect(url_for('user.profile', user_id=friend_id))
+    return redirect(url_for('user.account', user_id=friend_id))
 
 
 @friend_bp.route('/remove_friend/<int:friend_id>', methods=['POST'])
@@ -68,6 +69,6 @@ def remove_friend(friend_id):
     else:
         flash("Користувач не є вашим другом!", "danger")
 
-    return redirect(url_for('user.profile', user_id=friend_id))
+    return redirect(url_for('user.account', user_id=friend_id))
 
 

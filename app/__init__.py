@@ -41,10 +41,8 @@ def create_app():
     def load_user(user_id):
         return User.query.get(int(user_id))
 
-    # Import models
     from app.models import User
 
-    # Register blueprints
     from .auth import auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
 

@@ -7,7 +7,7 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 
 from app import login_manager, db
-from app.models import User
+from app.models import User, Friend
 from app.user import user_bp
 from app.user.form import ChangePasswordForm, UpdateAccountForm
 
@@ -22,11 +22,28 @@ def load_user(user_id):
 @user_bp.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
-    data = [os.name, datetime.datetime.now(), request.user_agent]
-    user_data = current_user
+    user_id = request.args.get("user_id", type=int)
+
+    if user_id and user_id != current_user.id:
+        user = User.query.get(user_id)
+        if not user:
+            flash("Користувача не знайдено!", "danger")
+            return redirect(url_for("user.account"))
+        is_own_profile = False
+    else:
+        user = current_user
+        is_own_profile = True
+
+    friends = User.query.join(Friend, ((Friend.user_id == user.id) & (Friend.friend_id == User.id)) |
+                              ((Friend.friend_id == user.id) & (Friend.user_id == User.id))) \
+        .filter(Friend.status == "accepted").all()
+
+    friend_requests = []
+    if is_own_profile:
+        friend_requests = User.query.join(Friend, Friend.user_id == User.id) \
+            .filter(Friend.friend_id == user.id, Friend.status == "pending").all()
 
     if request.method == 'POST':
-        user = current_user
         if 'enable_2fa' in request.form:
             if not user.two_factor_enabled:
                 totp = pyotp.random_base32()
@@ -41,14 +58,16 @@ def account():
             flash('2FA вимкнено.', 'success')
 
     return render_template('account.html',
-                           data=data,
-                           user_data=user_data,
-                           user=user_data,
+                           user=user,
+                           is_own_profile=is_own_profile,  # Додаємо змінну
                            os_info=os.name,
-                           user_agent="Sample User Agent",
+                           user_agent=request.user_agent.string,
                            current_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                           is_authenticated=current_user.is_authenticated
+                           is_authenticated=current_user.is_authenticated,
+                           friends=friends,
+                           friend_requests=friend_requests
                            )
+
 
 
 @user_bp.route('/change_data', methods=['GET', 'POST'])

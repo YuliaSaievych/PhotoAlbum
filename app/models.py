@@ -88,7 +88,7 @@ class Friend(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     friend_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    status = db.Column(db.String(20), default="pending")  # "pending", "accepted"
+    status = db.Column(db.String(20), default="pending")
 
     user = db.relationship('User', foreign_keys=[user_id], backref='friend_requests_sent')
     friend = db.relationship('User', foreign_keys=[friend_id], backref='friend_requests_received')
