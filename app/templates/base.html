@@ -3,57 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-    {#    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">#}
+{#    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">#}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/info.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" >
     <title>{% block title %}Photo Book{% endblock %}</title>
 </head>
 <body>
-<header>
-    <nav>
-        <a href="{{ url_for('general.home') }}" class="logo">Photo Book</a>
-        <div class="icons">
-            <a href="#" class="icon mail"></a>
-            <a href="#" class="icon notifications"></a>
-            <a href="#" class="icon menu" onclick="toggleMenu()"></a>
-        </div>
-        <div id="myMenu">
-            <div class="menu-list">
-                {% if current_user.is_authenticated %}
-                    <div class="menu-item">
-                        <a href="{{ url_for('user.account', username=current_user.id) }}">Профіль {{ current_user.username }}</a>
-                    </div>
-                    <div>
-                        <a href="{{ url_for('photo.gallery') }}">Галерея</a>
-                    </div>
-                    <div class="menu-item">
-                        <form action="{{ url_for('auth.logout') }}" method="POST" style="display: inline;">
-                            <button type="submit" class="btn-link" style="border:none; background:none;">Вийти</button>
-                        </form>
-
-                    </div>
-                {% else %}
-                    <div class="menu-item">
-                        <a href="{{ url_for('auth.login') }}">Вхід</a>
-                    </div>
-                    <div class="menu-item">
-                        <a href="{{ url_for('auth.register') }}">Реєстрація</a>
-                    </div>
-                {% endif %}
+        <nav class="header">
+            <div class="logo">
+                <a href="{{ url_for('general.home') }}" class="logo">
+                    <img src="{{ url_for('static', filename='images/logo.svg') }}" class="logo" alt="logo">
+                </a>
             </div>
-        </div>
-    </nav>
-</header>
+            <div class="auth">
+                    {% if current_user.is_authenticated %}
+                        <div class="menu-item">
+                            <a href="{{ url_for('user.account', username=current_user.id) }}" class="btn">Профіль {{ current_user.username }}</a>
+                        </div>
+                        <div class="menu-item">
+                            <a href="{{ url_for('photo.gallery', username=current_user.id) }}" class="btn">Галерея {{ current_user.username }}</a>
+                        </div>
+                        <div class="menu-item">
+                            <form action="{{ url_for('auth.logout') }}" method="POST" style="display: inline;">
+                                <button type="submit" class="btn-link" style="border:none; background:none;" class="btn">Вийти</button>
+                            </form>
 
-<main>
-    <main class="content">
-        {% block content %}{% endblock %}
-    </main>
-</main>
-
-
-<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+                        </div>
+                    {% else %}
+                        <div class="menu-item">
+                            <a href="{{ url_for('auth.login') }}" class="btn" >Вхід</a>
+                        </div>
+                        <div class="menu-item">
+                            <a href="{{ url_for('auth.register') }}" class="btn" >Реєстрація</a>
+                        </div>
+                    {% endif %}
+            </div>
+        </nav>
+        <main class="content">
+            {% block content %}{% endblock %}
+        </main>
+        <footer class="footer">
+            <h4>Умови обслуговування</h4>
+            <h4>Політика конфіденційності</h4>
+            <h4>Довідка</h4>
+        </footer>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
 
 </body>

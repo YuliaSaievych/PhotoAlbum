@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %} Поширити фото {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Поширити фото</h2>
+    
+    <img src="{{ photo.filename }}" class="img-fluid mb-3" alt="Фото">
+
+    <form method="POST">
+        <div class="mb-3">
+            <label for="friends" class="form-label">Виберіть друзів для поширення:</label>
+            <select class="form-select" name="friends" multiple required>
+                {% for friend in friends %}
+                    <option value="{{ friend.id }}">{{ friend.username }} ({{ friend.email }})</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">📤 Поширити</button>
+        <a href="{{ url_for('photo.gallery') }}" class="btn btn-secondary">⬅ Назад</a>
+    </form>
+</div>
+{% endblock %}

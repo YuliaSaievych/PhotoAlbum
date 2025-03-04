@@ -1,12 +1,12 @@
 from flask_wtf import FlaskForm
 from wtforms.fields.simple import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Regexp, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Regexp, Email, EqualTo, ValidationError, Length
 
 from app.models import User
 
 
 class RegisterForm(FlaskForm):
-    username = StringField('Login', validators=[
+    username = StringField('Ім\'я користувача', validators=[
         DataRequired(),
         Regexp('^[a-zA-Z0-9_-]{3,20}$',
                message='Ім\'я користувача має бути довжиною 3-20 символів і може містити лише літери, цифри, підкреслення та дефіси.'),
@@ -16,7 +16,7 @@ class RegisterForm(FlaskForm):
     password = PasswordField('Пароль', validators=[DataRequired()])
     confirm_password = PasswordField('Підтвердіть пароль', validators=[DataRequired(), EqualTo('password')])
     email = StringField('Електронна пошта', validators=[DataRequired(), Email()])
-    submit = SubmitField('Sign up')
+    submit = SubmitField('Зареєструватися')
 
     def validate_username(self, field):
         if User.query.filter_by(username=field.data).first():
@@ -53,3 +53,11 @@ class LoginForm(FlaskForm):
 class OTPForm(FlaskForm):
     otp = StringField('OTP', validators=[DataRequired()])
     submit = SubmitField('Верифікація OTP')
+
+class RecoverPasswordForm(FlaskForm):
+    email = StringField('Електронна адреса', validators=[DataRequired(), Email()])
+    submit = SubmitField('Відновити')
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Новий пароль', validators=[DataRequired(), Length(min=6)])
+    submit = SubmitField('Змінити пароль')

@@ -12,7 +12,7 @@ from flask_mail import Message
 from app import db, mail
 from app.models import User
 from . import auth_bp
-from .form import RegisterForm, LoginForm, OTPForm
+from .form import RegisterForm, LoginForm, OTPForm, RecoverPasswordForm, ResetPasswordForm
 
 
 def generate_otp():
@@ -72,6 +72,7 @@ def register():
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    recover_form = RecoverPasswordForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
         if user is None:
@@ -98,6 +99,7 @@ def login():
 
     return render_template('login.html',
                            form=form,
+                           recover_form=recover_form,
                            title="Login",
                            os_info=os.name,
                            user_agent="Sample User Agent",
@@ -173,3 +175,51 @@ def send_otp_email(email, otp):
         print(f"OTP відправлено на {email}")
     except Exception as e:
         print(f"Помилка відправлення: {e}")
+
+@auth_bp.route('/recover', methods=['GET', 'POST'])
+def recover():
+    form = RecoverPasswordForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        user = User.query.filter_by(email=email).first()
+
+        if user:
+            token = ''.join(random.choices(string.ascii_letters + string.digits, k=32))
+
+            user.recover_token = token
+            db.session.commit()
+
+            recovery_link = url_for('reset_password', token=token, _external=True)
+
+            msg = Message('Відновлення паролю', recipients=[email])
+            msg.body = f'Щоб відновити пароль, натисніть на це посилання: {recovery_link}'
+            mail.send(msg)
+
+            flash('Посилання на відновлення паролю надіслано на вашу електронну адресу.', 'success')
+            return redirect(url_for('login'))
+        else:
+            flash('Ця електронна адреса не зареєстрована.', 'danger')
+
+    return render_template('home.html', form=form)
+
+
+@auth_bp.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    user = User.query.filter_by(recover_token=token).first()
+
+    if not user:
+        flash('Невірне посилання для відновлення паролю.', 'danger')
+        return redirect(url_for('login'))
+
+    form = ResetPasswordForm()
+
+    if form.validate_on_submit():
+        new_password = form.password.data
+        user.password = new_password
+        user.recover_token = None
+        db.session.commit()
+
+        flash('Пароль успішно змінено.', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('reset_password.html', form=form)

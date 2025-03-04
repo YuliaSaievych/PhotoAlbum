@@ -56,6 +56,9 @@
                                   style="display:inline;">
                                 <button type="submit" class="btn btn-sm btn-danger">🗑 Видалити</button>
                             </form>
+                            <a href="{{ url_for('photo.share_photo', photo_id=photo.id) }}" class="btn btn-sm btn-warning">
+                                📤 Поширити
+                            </a>
                         </div>
                     </div>
                 </div>

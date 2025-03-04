@@ -7,7 +7,6 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     DEBUG = True
 
-    # Bunny.net storage settings
     BUNNY_STORAGE_API_KEY = '8bae990f-416f-40c8-8f7340e99f65-13e8-4811'
     BUNNY_STORAGE_ZONE = 'flaskproject'
     BUNNY_STORAGE_REGION = 'de'

@@ -1,38 +1,29 @@
-function toggleMenu() {
-    var menu = document.getElementById('myMenu');
-    menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-}
+function copyToClipboard() {
+    var copyText = document.querySelector("input");
+    copyText.select();
+    document.execCommand("copy");
+    alert("Посилання скопійоване!");
+};
+document.addEventListener('DOMContentLoaded', function() {
+    const recoverBtn = document.getElementById('recoverBtn');
+    const recoverForm = document.getElementById('recoverForm');
 
-document.addEventListener('click', function (event) {
-    var menu = document.getElementById('myMenu');
-    var modals = document.querySelectorAll('.modal');
-
-    // Close modals when clicking outside
-    if (!event.target.closest('.modal-content') && !event.target.closest('.icon.menu')) {
-        modals.forEach(function (modal) {
-            if (modal.style.display === 'block') {
-                modal.style.display = 'none';
-            }
+    if (recoverBtn && recoverForm) {
+        recoverBtn.addEventListener('click', function() {
+            recoverForm.style.display = recoverForm.style.display === 'none' ? 'block' : 'none';
         });
     }
-
-    // Close menu when clicking outside
-    if (!event.target.closest('.menu') && !event.target.closest('#myMenu')) {
-        menu.style.display = 'none';
-    }
 });
 
-const letters = document.querySelectorAll('.letter');
+document.getElementById("openRecoverForm").addEventListener("click", function(event) {
+        let form = document.getElementById("recoverForm");
+        form.style.display = "block";
+        event.stopPropagation();
+    });
 
-letters.forEach(letter => {
-    // Randomize rotation
-    const randomRotation = Math.random() * 30 - 15; // between -15 and 15 degrees
-    letter.style.transform = `rotate(${randomRotation}deg)`;
-});
-
-function copyToClipboard() {
-        var copyText = document.querySelector("input");
-        copyText.select();
-        document.execCommand("copy");
-        alert("Посилання скопійоване!");
-    }
+    document.addEventListener("click", function(event) {
+        let form = document.getElementById("recoverForm");
+        if (form.style.display === "block" && !form.contains(event.target) && event.target.id !== "openRecoverForm") {
+            form.style.display = "none";
+        }
+    });

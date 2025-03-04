@@ -21,6 +21,7 @@ class User(db.Model, UserMixin):
     activation_token = db.Column(db.String(128), nullable=True)
     token_expiration = db.Column(db.DateTime, nullable=True)
     option_enabled = db.Column(db.Boolean, default=False)
+    recover_token = db.Column(db.String(32), unique=True, nullable=True)
     photos = db.relationship('Photo', backref='user', lazy=True)
     folders = db.relationship('Folder', backref='user', lazy=True)
     def set_password(self, password):
@@ -100,3 +101,16 @@ class Friend(db.Model):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
+
+class SharedPhoto(db.Model):
+    __tablename__ = 'shared_photo'
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    photo_id = db.Column(db.Integer, db.ForeignKey('photo.id'), nullable=False)
+    shared_date = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    sender = db.relationship('User', foreign_keys=[sender_id], backref='shared_photos_sent')
+    receiver = db.relationship('User', foreign_keys=[receiver_id], backref='shared_photos_received')
+    photo = db.relationship('Photo', backref='shared_instances')

@@ -7,7 +7,6 @@ from flask_mail import Mail
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-UPLOAD_FOLDER = os.path.join(os.getcwd(), 'app/static/uploads')
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -29,7 +28,6 @@ def create_app():
     app.config['MAIL_USERNAME'] = 'flaskserver4@gmail.com'
     app.config['MAIL_PASSWORD'] = 'bjor symu vtju rgyd'
     app.config['MAIL_DEFAULT_SENDER'] = 'FriendZone@gmail.com'
-    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
     bcrypt.init_app(app)
     db.init_app(app)

@@ -4,12 +4,16 @@ import os
 from flask import render_template, redirect, request, url_for
 from flask_login import current_user
 
+from app.auth.form import RegisterForm, LoginForm, RecoverPasswordForm
 from app.general import general_bp
 
 
 @general_bp.route('/')
 def home():
+    form = RegisterForm()
     return render_template('home.html',
+                           form=form,
+                           register_form=form,
                            os_info=os.name,
                            user_agent="Sample User Agent",
                            current_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),

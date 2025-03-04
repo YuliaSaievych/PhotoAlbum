@@ -7,6 +7,7 @@ from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 
 from app import login_manager, db
+from app.auth.form import LoginForm, RegisterForm
 from app.models import User, Friend
 from app.user import user_bp
 from app.user.form import ChangePasswordForm, UpdateAccountForm
@@ -57,15 +58,20 @@ def account():
             db.session.commit()
             flash('2FA вимкнено.', 'success')
 
+    login_form = LoginForm()
+    register_form = RegisterForm()
+
     return render_template('account.html',
                            user=user,
-                           is_own_profile=is_own_profile,  # Додаємо змінну
+                           is_own_profile=is_own_profile,
                            os_info=os.name,
                            user_agent=request.user_agent.string,
                            current_time=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                            is_authenticated=current_user.is_authenticated,
                            friends=friends,
-                           friend_requests=friend_requests
+                           friend_requests=friend_requests,
+                           login_form=login_form,
+                           register_form=register_form
                            )
 
 
@@ -74,7 +80,6 @@ def account():
 @login_required
 def change_data():
     data = [os.name, datetime.datetime.now(), request.user_agent]
-    user_data = current_user
     account_form = UpdateAccountForm(obj=current_user)
     password_form = ChangePasswordForm()
 
