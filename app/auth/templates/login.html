@@ -40,17 +40,21 @@
                 </form>
             </div>
 
-    <div class="form" id="recoverForm" popover style="display: none;">
+    <div class="form" id="recoverForm" popover style="display: {% if show_recover_form %}block{% else %}none{% endif %};">
         <h1 class="auth-header">Відновлення пароля</h1>
         <form action="{{ url_for('auth.recover') }}" method="POST" style="gap: 8px">
             {{ recover_form.csrf_token }}
             <div class="menu-item">
                 {{ render_field(recover_form.email) }}
+                {% for error in errors %}
+                    <p class="error-message">{{ error }}</p>
+                {% endfor %}
             </div>
             <br>
             <button type="submit" class="btn-auth">Відновити</button>
         </form>
     </div>
+
 
 
 

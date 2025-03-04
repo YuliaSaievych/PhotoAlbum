@@ -58,6 +58,15 @@ class RecoverPasswordForm(FlaskForm):
     email = StringField('Електронна адреса', validators=[DataRequired(), Email()])
     submit = SubmitField('Відновити')
 
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data).first()
+        if user is None:
+            raise ValidationError('Ця електронна адреса не зареєстрована!')
+
+    def validate_email_submit(self):
+        return self.is_submitted() and self.validate()
+
+
 class ResetPasswordForm(FlaskForm):
     password = PasswordField('Новий пароль', validators=[DataRequired(), Length(min=6)])
     submit = SubmitField('Змінити пароль')

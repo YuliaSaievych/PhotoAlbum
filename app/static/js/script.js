@@ -27,3 +27,4 @@ document.getElementById("openRecoverForm").addEventListener("click", function(ev
             form.style.display = "none";
         }
     });
+

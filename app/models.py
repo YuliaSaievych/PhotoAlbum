@@ -14,7 +14,7 @@ class User(db.Model, UserMixin):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120), unique=True, nullable=False)
-    image_file = db.Column(db.String(120), unique=False, nullable=False, default='./app/static/images/image1')
+    image_file = db.Column(db.String(120), unique=False, nullable=False, default='./images/default_profile_picture.jpg')
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(128))
     is_active = db.Column(db.Boolean, default=False, nullable=False)

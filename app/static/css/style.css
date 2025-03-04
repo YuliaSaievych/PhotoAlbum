@@ -77,7 +77,7 @@ p {
 }
 
 img {
-    width: 800px;
+    width: px;
     height: 600px;
     object-fit: cover;
 }

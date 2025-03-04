@@ -6,6 +6,7 @@ from datetime import datetime
 
 import requests
 from flask import redirect, flash, url_for, render_template, request, session, current_app
+from flask_bcrypt import generate_password_hash
 from flask_login import current_user, login_user, login_required, logout_user
 from flask_mail import Message
 
@@ -17,6 +18,22 @@ from .form import RegisterForm, LoginForm, OTPForm, RecoverPasswordForm, ResetPa
 
 def generate_otp():
     return ''.join(random.choices(string.digits, k=6))
+
+
+
+def send_reset_password_email(email, token):
+    reset_password_link = url_for('auth.reset_password', token=token, _external=True)
+    msg = Message(
+        'Відновлення паролю',
+        sender=current_app.config['MAIL_USERNAME'],
+        recipients=[email]
+    )
+    msg.body = f'Щоб відновити пароль, натисніть на це посилання: {reset_password_link}'
+    try:
+        mail.send(msg)
+        print(f"Лист надіслано на {email} з посиланням: {reset_password_link}")
+    except Exception as e:
+        print(f"Помилка надсилання листа: {e}")
 
 
 @auth_bp.route("/register", methods=["GET", "POST"])
@@ -71,6 +88,7 @@ def register():
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    errors = []
     form = LoginForm()
     recover_form = RecoverPasswordForm()
     if form.validate_on_submit():
@@ -139,7 +157,7 @@ def send_activation_email(email, token):
         sender=current_app.config['MAIL_USERNAME'],
         recipients=[email]
     )
-    msg.body = f'Перейдіть за посиланням, що активувати ваш акаунт: {activation_link}'
+    msg.body = f'Перейдіть за посиланням, щоб активувати ваш акаунт: {activation_link}'
     try:
         mail.send(msg)
         print(f"Лист аквації надіслано на {email} з посиланням: {activation_link}")
@@ -176,11 +194,15 @@ def send_otp_email(email, otp):
     except Exception as e:
         print(f"Помилка відправлення: {e}")
 
+
 @auth_bp.route('/recover', methods=['GET', 'POST'])
 def recover():
-    form = RecoverPasswordForm()
-    if form.validate_on_submit():
-        email = form.email.data
+    form = LoginForm()
+    recover_form = RecoverPasswordForm()
+    show_recover_form = False
+
+    if recover_form.validate_on_submit():
+        email = recover_form.email.data
         user = User.query.filter_by(email=email).first()
 
         if user:
@@ -189,18 +211,15 @@ def recover():
             user.recover_token = token
             db.session.commit()
 
-            recovery_link = url_for('reset_password', token=token, _external=True)
-
-            msg = Message('Відновлення паролю', recipients=[email])
-            msg.body = f'Щоб відновити пароль, натисніть на це посилання: {recovery_link}'
-            mail.send(msg)
+            send_reset_password_email(email, token)
 
             flash('Посилання на відновлення паролю надіслано на вашу електронну адресу.', 'success')
-            return redirect(url_for('login'))
+            return redirect(url_for('auth.login'))
         else:
             flash('Ця електронна адреса не зареєстрована.', 'danger')
+            show_recover_form = True
 
-    return render_template('home.html', form=form)
+    return render_template('login.html', recover_form=recover_form, form=form, show_recover_form=show_recover_form)
 
 
 @auth_bp.route('/reset_password/<token>', methods=['GET', 'POST'])
@@ -208,18 +227,19 @@ def reset_password(token):
     user = User.query.filter_by(recover_token=token).first()
 
     if not user:
-        flash('Невірне посилання для відновлення паролю.', 'danger')
-        return redirect(url_for('login'))
+        flash('Невірне або прострочене посилання для відновлення паролю.', 'danger')
+        return redirect(url_for('auth.login'))
 
     form = ResetPasswordForm()
 
     if form.validate_on_submit():
         new_password = form.password.data
-        user.password = new_password
+        user.password = generate_password_hash(new_password)
         user.recover_token = None
         db.session.commit()
 
         flash('Пароль успішно змінено.', 'success')
-        return redirect(url_for('login'))
+        return redirect(url_for('auth.login'))
 
-    return render_template('reset_password.html', form=form)
+    print(f"Токен відновлення: {token}")
+    return render_template('reset_password.html', form=form, token=token)
