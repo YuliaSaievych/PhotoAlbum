@@ -27,7 +27,7 @@ def create_app():
     app.config['MAIL_USE_TLS'] = True
     app.config['MAIL_USERNAME'] = 'flaskserver4@gmail.com'
     app.config['MAIL_PASSWORD'] = 'bjor symu vtju rgyd'
-    app.config['MAIL_DEFAULT_SENDER'] = 'FriendZone@gmail.com'
+    app.config['MAIL_DEFAULT_SENDER'] = 'flaskserver@gmail.com'
 
     bcrypt.init_app(app)
     db.init_app(app)
