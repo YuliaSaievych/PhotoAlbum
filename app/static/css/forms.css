@@ -1,0 +1,169 @@
+.hidden {
+    display: none;
+}
+
+.visible {
+    display: block;
+}
+
+
+.label {
+    padding: 0 16px;
+    text-align: left;
+    justify-content: left;
+}
+
+.menu-item {
+    width: auto;
+    box-sizing: border-box;
+}
+.menu-items {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    gap: 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.input {
+    width: 408px;
+    height: 56px;
+    padding: 16px;
+    border: 1px solid rgba(51, 24, 50, 0.2);
+    border-radius: 8px;
+
+}
+
+.eror{
+    font-size: 14px;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+ul{
+    margin: 0;
+}
+.remember {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: center;
+}
+
+
+
+.log-form h1,
+.sig-form h1 {
+    text-align: center;
+    width: 100%;
+}
+
+.log-form {
+    margin: 0;
+    background: linear-gradient(0deg, rgba(254, 250, 252, 1) 41%, rgba(249, 214, 229, 1) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 680px;
+    width: 100%;
+    padding-bottom: 24px;
+}
+
+.g-recaptcha {
+    transform: scale(0.9);
+    transform-origin: center;
+}
+
+.auth-header {
+    justify-content: center;
+    box-sizing: border-box;
+    align-items: center;
+}
+
+.auth-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: rgba(51, 24, 50, 1);
+    width: 100%;
+}
+
+.auth-text a{
+    color: rgba(51, 24, 50, 1);
+}
+
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 488px;
+    width: 100%;
+    padding: 24px 40px;
+    background: rgba(254, 250, 252, 0.25);
+    border: none;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    outline: none;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    min-height: fit-content;
+    max-height: 90vh;
+    box-sizing: border-box;
+}
+
+.forgot-password {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    color: rgba(51, 24, 50, 1);
+    font-size: 10px;
+    font-weight: 400;
+    text-decoration: none;
+}
+
+.btn-auth {
+    width: 100%;
+    height: auto;
+    padding: 16px;
+    color: rgba(254, 250, 252, 1);
+    background-color: rgba(51, 24, 50, 1);
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.recover-form {
+    width: 408px;
+    height: auto;
+    border: none;
+}
+.form-error {
+    top: 0; /* Точно до верхнього краю */
+    width: auto;
+    height: auto;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 488px;
+    padding: 16px 40px;
+    background: rgba(254, 250, 252, 0.25);
+    border: none;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    outline: none;
+    align-items: center;
+    min-height: fit-content;
+    max-height: 90vh;
+    box-sizing: border-box;
+    z-index: 9999;
+}
+
+
+
+

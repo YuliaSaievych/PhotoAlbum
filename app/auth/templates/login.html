@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Вхід
+{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% from "render_field.html" import render_field %}
+
+    <div class="log-form">
+                <h1 class="auth-header">Вхід</h1>
+                <form action="{{ url_for('auth.login') }}" method="POST" class="form" >
+                    {{ form.csrf_token }}
+
+                    <div class="menu-item">
+                        {{ render_field(form.username) }}
+                        {% for message in messages %}
+                                        <li>{{ message }}</li>
+                                    {% endfor %}
+                    </div>
+                    <div class="menu-item">
+                        {{ render_field(form.password) }}
+                        {% for message in messages %}
+                                        <li>{{ message }}</li>
+                                    {% endfor %}
+                    <p class="forgot-password">
+                        Забули пароль?
+                        <a href="javascript:void(0);" class="forgot-password" id="openRecoverForm">Відновити</a>
+                    </p>
+                    </div>
+                    <div class="remember">
+                        {{ render_field(form.remember) }}
+                    </div>
+                    <button type="submit" class="btn-auth">Увійти</button>
+                    <div class="auth-text">
+                        <p>Ще не зареєструвалися?</p>
+                        <a href=" {{ url_for('auth.register') }} ">Зареєструватися</a>
+                    </div>
+                </form>
+            </div>
+
+    <div class="form" id="recoverForm" popover style="display: {% if show_recover_form %}block{% else %}none{% endif %};">
+        <h1 class="auth-header">Відновлення пароля</h1>
+        <form action="{{ url_for('auth.recover') }}" method="POST" style="gap: 8px">
+            {{ recover_form.csrf_token }}
+            <div class="menu-item">
+                {{ render_field(recover_form.email) }}
+                {% for error in errors %}
+                    <p class="error-message">{{ error }}</p>
+                {% endfor %}
+            </div>
+            <br>
+            <button type="submit" class="btn-auth">Відновити</button>
+        </form>
+    </div>
+
+
+
+
+
+{% endblock %}

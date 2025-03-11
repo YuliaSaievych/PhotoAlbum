@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %} Поширити фото {% endblock %}
+
+{% block content %}
+<div class="log-form" style="gap: 28px">
+    <h2 class="auth-header">Поширити фото</h2>
+    
+    <img src="{{ photo.filename }}" class="share-img" alt="Фото">
+
+    <form method="POST" class="share-group">
+        <div class="form-group share-group">
+            <label for="friends" class="form-label">Виберіть друзів для поширення:</label>
+            <select class="form-select" name="friends" multiple required>
+                {% for friend in friends %}
+                    <option value="{{ friend.id }}">{{ friend.username }} ({{ friend.email }})</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn-auth" style="margin: 28px 0">Поширити</button>
+        <a href="{{ url_for('photo.gallery') }}" class="btn-auth" style="justify-content: center">Назад</a>
+    </form>
+</div>
+{% endblock %}

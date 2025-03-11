@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %} Створити папку {% endblock %}
+
+{% block content %}
+<div class="load">
+        <form method="POST" class="form">
+            {{ form.hidden_tag() }}
+            <label for="name">Введіть назву папки</label>
+            {{ render_field(form.name) }}
+            {% for error in errors %}
+                <p class="error-message">{{ error }}</p>
+            {% endfor %}
+            <button type="submit" class="btn-auth">{{ form.submit.label }}</button>
+        </form>
+
+</div>
+
+
+{% endblock %}

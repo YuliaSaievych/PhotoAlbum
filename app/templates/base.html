@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/info.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/gallery.css') }}">
+    <link rel="stylesheet" href=" {{ url_for('static', filename='css/profile.css') }} ">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <title>{% block title %}Photo Book{% endblock %}</title>
+</head>
+<body>
+    {% from "render_field.html" import render_field %}
+    <nav class="header">
+        <div class="logo">
+            <a href="{{ url_for('general.home') }}" class="logo">
+                <img src="{{ url_for('static', filename='images/logo.svg') }}" class="logo" alt="logo">
+            </a>
+        </div>
+        <div class="auth">
+            {% if current_user.is_authenticated %}
+                <div class="auth-user">
+                    <div class="gallery-icon">
+                        <a href="{{ url_for('photo.gallery') }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#321832">
+                                <path d="M120-200q-33 0-56.5-23.5T40-280v-400q0-33 23.5-56.5T120-760h400q33 0 56.5 23.5T600-680v400q0 33-23.5 56.5T520-200H120Zm600-320q-17 0-28.5-11.5T680-560v-160q0-17 11.5-28.5T720-760h160q17 0 28.5 11.5T920-720v160q0 17-11.5 28.5T880-520H720Zm40-80h80v-80h-80v80ZM120-280h400v-400H120v400Zm40-80h320L375-500l-75 100-55-73-85 113Zm560 160q-17 0-28.5-11.5T680-240v-160q0-17 11.5-28.5T720-440h160q17 0 28.5 11.5T920-400v160q0 17-11.5 28.5T880-200H720Zm40-80h80v-80h-80v80Zm-640 0v-400 400Zm640-320v-80 80Zm0 320v-80 80Z"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="add-file-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#321832" id="openCreateForm">
+                            <path d="M446.67-446.67H200v-66.66h246.67V-760h66.66v246.67H760v66.66H513.33V-200h-66.66v-246.67Z"/>
+                        </svg>
+                    </div>
+                    <div class="setting-icon">
+                        <a href="{{ url_for('user.change_data') }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#321832">
+                                <path d="m382-80-18.67-126.67q-17-6.33-34.83-16.66-17.83-10.34-32.17-21.67L178-192.33 79.33-365l106.34-78.67q-1.67-8.33-2-18.16-.34-9.84-.34-18.17 0-8.33.34-18.17.33-9.83 2-18.16L79.33-595 178-767.67 296.33-715q14.34-11.33 32.34-21.67 18-10.33 34.66-16L382-880h196l18.67 126.67q17 6.33 35.16 16.33 18.17 10 31.84 22L782-767.67 880.67-595l-106.34 77.33q1.67 9 2 18.84.34 9.83.34 18.83 0 9-.34 18.5Q776-452 774-443l106.33 78-98.66 172.67-118-52.67q-14.34 11.33-32 22-17.67 10.67-35 16.33L578-80H382Zm55.33-66.67h85l14-110q32.34-8 60.84-24.5T649-321l103.67 44.33 39.66-70.66L701-415q4.33-16 6.67-32.17Q710-463.33 710-480q0-16.67-2-32.83-2-16.17-7-32.17l91.33-67.67-39.66-70.66L649-638.67q-22.67-25-50.83-41.83-28.17-16.83-61.84-22.83l-13.66-110h-85l-14 110q-33 7.33-61.5 23.83T311-639l-103.67-44.33-39.66 70.66L259-545.33Q254.67-529 252.33-513 250-497 250-480q0 16.67 2.33 32.67 2.34 16 6.67 32.33l-91.33 67.67 39.66 70.66L311-321.33q23.33 23.66 51.83 40.16 28.5 16.5 60.84 24.5l13.66 110Zm43.34-200q55.33 0 94.33-39T614-480q0-55.33-39-94.33t-94.33-39q-55.67 0-94.5 39-38.84 39-38.84 94.33t38.84 94.33q38.83 39 94.5 39ZM480-480Z"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="user-icon" id="profilelink">
+                        {% if current_user.image_file %}
+                            <img class="photo-profile" src="{{ url_for('static', filename='/images/' + current_user.image_file) }}" id="profileImage">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='images/default_profile_picture.jpg') }}" alt="Фото" id="profileText" class="photo-profile">
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="menu-item">
+                    <a href="{{ url_for('auth.login') }}" class="btn">Вхід</a>
+                </div>
+                <div class="menu-item">
+                    <a href="{{ url_for('auth.register') }}" class="btn">Реєстрація</a>
+                </div>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="form-error" id="error" popover style="display: none;">
+        <div class="menu-item" id="error-message">
+            {% for error in errors %}
+                <p class="message">{{ error }}</p>
+            {% endfor %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div id="flash-message" class="message">
+                        {% for category, message in messages %}
+                            <h4 class="{{ category }}">{{ message }}</h4>
+                        {% endfor %}
+                    </div>
+                    <script>
+                        setTimeout(() => {
+                            document.getElementById("flash-message").style.display = "none";
+                        }, 3000);
+                    </script>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    <div class="form-add" id="Create" popover style="display: {% if show_recover_form %}block{% else %}none{% endif %};">
+        <div class="create-folder">
+            <a href="{{ url_for('photo.create_folder', parent_id=current_folder.id if current_folder else None) }}" class="create">Створити папку</a>
+            <a href="{{ url_for('photo.upload_photo') }}" class="create">Завантажити фото</a>
+        </div>
+    </div>
+    <div class="form-add" id="profile-link" popover style="display: {% if show_recover_form %}block{% else %}none{% endif %};">
+        <div class="create-folder">
+            <a href="{{ url_for('user.account', parent_id=current_folder.id if current_folder else None) }}" class="create">Профіль</a>
+            <a href="{{ url_for('auth.logout') }}" class="create">Вийти</a>
+        </div>
+    </div>
+
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <h4>Умови обслуговування</h4>
+        <h4>Політика конфіденційності</h4>
+        <h4>Довідка</h4>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/errorScript.js') }}"></script>
+
+
+</body>
+</html>

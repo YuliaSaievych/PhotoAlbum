@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Профіль користувача{% endblock %}
+
+{% block content %}
+<div class="profile-info">
+    <div class="profile">
+        <div class="photo-account">
+            {% if current_user.image_file %}
+                <img src="{{ url_for('static', filename='/images/' + current_user.image_file) }}" id="profileImage">
+            {% else %}
+                <img src="{{ url_for('static', filename='images/default_profile_picture.jpg') }}" alt="Фото" id="profileText" class="photo-profile">
+            {% endif %}
+        </div>
+        <div class="user-info">
+            <div class="info">
+                <h3>Профіль користувача: {{ user.username }}</h3>
+            </div>
+            <div class="info">
+                <h3>Електронна адреса: {{ user.email }}</h3>
+            </div>
+            <div class="info">
+                <h3>Друзі: </h3>
+            </div>
+        </div>
+    </div>
+    <div class="info-gallery">
+        <div class="num">
+           <h3>Папок:</h3>
+        </div>
+        <div class="num">
+
+            {% if photos %}
+                <h3>Фото: {{ photos|length }}</h3>
+            {% else %}
+                <h3>Фото: 0</h3>
+            {% endif %}
+        </div>
+    </div>
+    <div class="requests-friends">
+        <div class="friends-link">
+            {% if is_own_profile %}
+                <h3>Поділіться цим посиланням, щоб додати користувача у друзі:</h3>
+                <div class="copy-link">
+                    <input class="copy-text" value="{{ user.get_friend_invite_link() }}" readonly>
+                    <button onclick="copyToClipboard()" class="btn-copy">Скопіювати</button>
+                </div>
+            {% endif %}
+        </div>
+        <div class="friends-link">
+            {% if is_own_profile %}
+                <h3>Запити у друзі:</h3>
+                    <ul>
+                        {% if friend_requests %}
+                            {% for request in friend_requests %}
+                                <li class="request">
+                                    <a href="{{ url_for('user.account', user_id=request.id) }}" style="font-size: 16px"   >{{ request.username }}</a>
+                                    <div class="btn-request">
+                                        <form action="{{ url_for('friend.accept_friend', friend_id=request.id) }}" method="POST" style="display:inline;">
+                                        <button type="submit" class="btn-add">Прийняти</button>
+                                    </form>
+                                    <form action="{{ url_for('friend.remove_friend', friend_id=request.id) }}" method="POST" style="display:inline;">
+                                        <button type="submit" class="btn-delete">Відхилити</button>
+                                    </form>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <p>Немає нових запитів у друзі.</p>
+                        {% endif %}
+                    </ul>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

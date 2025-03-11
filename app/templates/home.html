@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block content %}
+        {% from "render_field.html" import render_field %}
+    <main class="main">
+
+        <section class="info-one">
+            <h1>Збережи найкращі моменти життя</h1>
+            <h3>Завантажуйте, зберігайте та переглядайте свої улюблені фото в зручному та безпечному просторі.</h3>
+            <h3>Створіть свій альбом прямо зараз!</h3>
+            <div class="more">
+                    <h3 class="info-text">[Переглянути більше]</h3>
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nNjAnIGhlaWdodD0nMjknIHZpZXdCb3g9JzAgMCA2MCAyOScgZmlsbD0nbm9uZScgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz4KPHBhdGggZD0nTTIgMi41TDMwLjMzNTkgMjYuNUw1OCAyLjUnIHN0cm9rZT0nIzMzMTgzMicgc3Ryb2tlLXdpZHRoPSc0JyBzdHJva2UtbGluZWNhcD0ncm91bmQnIHN0cm9rZS1saW5pam9pbj0ncm91bmQnLz4KPC9zdmc+Cg==" alt="Vector1" class="vector1">
+                </div>
+        </section>
+
+        <section class="info-two">
+            <div class="text-info">
+                <h1>Завантажуйте фото в альбом</h1>
+                <h3>Додавайте свої знімки в кілька кліків. Підтримка високої якості зображень гарантує, що кожен момент залишиться таким же чітким і яскравим, як у день зйомки.</h3>
+            </div>
+            <div class="img">
+                <img src="{{ url_for('static', filename='images/info_two.png') }}" alt="photo1">
+            </div>
+        </section>
+
+        <section class="info-three">
+            <div class="img">
+                <img src="{{ url_for('static', filename='images/info_three.png') }}" alt="photo1">
+            </div>
+            <div class="text-info">
+                <h1>Групуйте фото по папках</h1>
+                <h3>Створюйте власну структуру альбомів. Сортуйте фото за подіями або темами. Підпапки допоможуть вам легко знайти потрібне фото серед тисяч інших.</h3>
+            </div>
+        </section>
+
+        <section class="info-four">
+            <div class="text-info">
+                <h1>Діліться моментами з друзями</h1>
+                <h3>Надсилайте окремі фото або цілі папки своїм близьким. Вирішуйте самі, хто має доступ до ваших спогадів.</h3>
+            </div>
+            <div class="img">
+                <img src="{{ url_for('static', filename='images/info_four.png') }}" alt="photo1">
+            </div>
+        </section>
+
+        <section class="info-five">
+            <div class="img">
+                <img src="{{ url_for('static', filename='images/info_five.png') }}" alt="photo1">
+            </div>
+            <div class="text-info">
+                <h1>Контроль доступу до папок</h1>
+                <h3>Налаштовуйте рівні доступу для кожного альбому. Оберіть, хто може переглядати, коментувати або завантажувати ваші фото. Ваша конфіденційність — наш пріоритет.</h3>
+            </div>
+        </section>
+
+        <section class="info-six">
+            <div class="text-six">
+                <h1>Приєднуйтесь до нас сьогодні та почніть створювати свій унікальний фотосвіт!</h1>
+                <h2>Зберігайте моменти. Діліться емоціями. </h2>
+                <h2>Насолоджуйтесь спогадами.</h2>
+            </div>
+            <div class="sig-form">
+                <h1>Реєстрація</h1>
+                <form action="{{ url_for('auth.register') }}" method="POST" class="form">
+                    {{ form.hidden_tag() }}
+                        <div class="menu-item">
+                            {{ render_field(form.username, placeholder="Ім'я користувача") }}
+                        </div>
+                        <div class="menu-item">
+                            {{ render_field(form.email, placeholder="Електронна пошта") }}
+                        </div>
+                        <div class="menu-item">
+                            {{ render_field(form.password, placeholder="Пароль") }}
+                        </div>
+                        <div class="menu-item">
+                            {{ render_field(form.confirm_password, placeholder="Повторіть пароль") }}
+                        </div>
+                        <div class="g-recaptcha" data-sitekey="6LcYS8sqAAAAAJbS50QsBi20J5qb59_pLjbBfVCM"></div>
+                        <button type="submit" class="btn-auth">Зареєструватися</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const sections = document.querySelectorAll("section");
+    const main = document.querySelector(".main");
+    let currentIndex = 0;
+    let isScrolling = false;
+
+    function goToSection(index) {
+        if (index >= 0 && index < sections.length) {
+            isScrolling = true;
+            currentIndex = index;
+            sections[currentIndex].scrollIntoView({ behavior: "smooth" });
+
+            setTimeout(() => {
+                isScrolling = false;
+            }, 700);
+        }
+    }
+
+    document.addEventListener("wheel", (event) => {
+        if (!isScrolling) {
+            if (event.deltaY > 0) {
+                goToSection(currentIndex + 1);
+            } else if (event.deltaY < 0) {
+                goToSection(currentIndex - 1);
+            }
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (!isScrolling) {
+            if (event.key === "ArrowDown") {
+                goToSection(currentIndex + 1);
+            } else if (event.key === "ArrowUp") {
+                goToSection(currentIndex - 1);
+            }
+        }
+    });
+
+    document.querySelector(".more").addEventListener("click", () => {
+        goToSection(currentIndex + 1);
+    });
+});
+
+    </script>
+{% endblock %}

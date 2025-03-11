@@ -1,0 +1,101 @@
+.logo {
+    width: 184px;
+    height: 68px;
+    display: flex;
+    align-items: flex-start;
+    flex-shrink: 0;
+    position: relative;
+    margin-left: 54px;
+}
+
+.header {
+    background: rgba(249, 214, 229, 1) 100%;
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 56px 24px 56px;
+}
+
+.auth {
+    width: auto;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+    padding: 24px 56px;
+}
+
+.btn {
+    width: 244px;
+    min-width: 150px;
+    height: 56px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    flex-shrink: 0;
+    border-radius: 8px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    color: rgba(51, 24, 50, 1) !important;
+    font-size: 24px;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    background-color: rgba(254, 250, 252, 1) !important;
+    transition: background 0.2s ease-in-out;
+    letter-spacing: normal;
+    line-height: normal;
+}
+
+.btn:visited {
+    color: rgba(51, 24, 50, 1) !important;
+    background-color: rgba(254, 250, 252, 1) !important;
+}
+
+.btn:focus, .btn:active {
+    outline: none;
+    box-shadow: none;
+    color: rgba(51, 24, 50, 1) !important;
+    background-color: rgba(254, 250, 252, 1) !important;
+}
+
+.btn:hover {
+    background-color: rgba(254, 250, 252, 1) !important;
+}
+
+.footer {
+    background-color: rgba(254, 250, 252, 1);
+    width: 100%;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    justify-content: center;
+    align-items: flex-end;
+    box-sizing: content-box;
+
+}
+
+.auth-user {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 28px;
+    align-items: center;
+
+}
+
+.photo-profile {
+    width: 56px;
+    height: 56px;
+    border: none;
+    border-radius: 50%;
+}
+
+

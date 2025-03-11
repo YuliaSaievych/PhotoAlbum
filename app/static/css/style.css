@@ -1,0 +1,127 @@
+body {
+    display: flex;
+    font-family: 'Montserrat', sans-serif;
+    color: rgba(51, 24, 50, 1);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+}
+
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: rgba(51, 24,50,1);
+}
+
+.text, h1, p {
+    color: rgba(51, 24, 50, 1);
+    text-align: center;
+    line-height: normal;
+}
+
+h1 {
+    text-align: left;
+    font-size: 36px;
+    font-weight: 400;
+}
+h2 {
+    font-size: 32px;
+    font-weight: 400;
+}
+
+h3 {
+    font-size: 24px;
+    font-weight: 400;
+}
+
+h4 {
+    font-size: 16px;
+    font-weight: 400;
+}
+
+h5 {
+    font-size: 20px;
+}
+
+
+p {
+    font-size: 12px;
+    font-weight: 400;
+}
+
+
+.info-two p, .info-four p, .info-six p {
+    text-align: left;
+
+}
+
+.more {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+.vector1 {
+    width: 56px;
+    height: 24px;
+}
+
+img {
+    width: 800px;
+    height: 600px;
+    object-fit: cover;
+}
+
+.create-folder {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: none;
+    border: none;
+}
+
+.create {
+    padding: 16px;
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 8px;
+    font-size: 24px;
+    border: none;
+}
+
+.form-add {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 488px;
+    border: none;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    outline: none;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    min-height: fit-content;
+    max-height: 90vh;
+    box-sizing: border-box;
+    z-index: 2000;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+button:active {
+    transform: scale(0.98);
+}

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="log-form" style="gap: 28px">
+    <form method="POST" action="{{ url_for('photo.share_folder', folder_id=folder.id) }}">
+        <h2 class="auth-header">Поширити папку: {{ folder.name }}</h2>
+        <div class="form-group">
+            <label for="friend_id">Вибрати друга:</label>
+            <select name="friend_id" required class="form-control">
+                {% for friend in friends %}
+                    <option value="{{ friend.id }}">{{ friend.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group" style="margin: 28px 0">
+            <label for="access_level">Рівень доступу:</label>
+            <select name="access_level" class="form-control">
+                <option value="viewer">Перегляд</option>
+                <option value="editor">Редагування</option>
+            </select>
+        </div>
+        <button type="submit" class="btn-auth">Додати</button>
+    </form>
+
+    <h3 class="auth-header">Користувачі з доступом:</h3>
+    <ul>
+        {% for user, level in shared_users.items() %}
+            <li class="user-control">
+            <div>
+                {{ user.username }} - {{ level }} <br>
+                <form class="share-group" method="POST" action="{{ url_for('photo.change_access_level', folder_id=folder.id, user_id=user.id) }}" style="display:inline;">
+                    <label for="new_access_level_{{ user.id }}">Новий рівень доступу:</label><br>
+                    <select name="new_access_level" id="new_access_level_{{ user.id }}" class="form-control">
+                        <option value="viewer" {% if level == 'viewer' %}selected{% endif %}>Перегляд</option>
+                        <option value="editor" {% if level == 'editor' %}selected{% endif %}>Редагування</option>
+                    </select>
+                    <button type="submit" class="btn-add">Змінити</button>
+                </form>
+                <form class="share-group" method="POST" action="{{ url_for('photo.remove_user_from_folder', folder_id=folder.id, user_id=user.id) }}" style="display:inline;">
+                    <button type="submit" class="btn-delete">Видалити</button>
+                </form>
+            </div>
+
+            </li>
+        {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('photo.gallery', folder_id=folder.id) }}">Назад до галереї</a>
+</div>
+{% endblock %}

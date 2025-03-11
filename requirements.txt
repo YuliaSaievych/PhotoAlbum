@@ -1,0 +1,12 @@
+flask
+gunicorn
+flask_bcrypt
+flask_login
+flask_mail
+flask_migrate
+flask_sqlalchemy
+flask_wtf
+wtforms
+requests
+pyotp
+werkzeug

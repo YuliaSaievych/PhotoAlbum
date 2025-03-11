@@ -1,0 +1,31 @@
+{% macro render_field(field) %}
+
+    {% if field.type == 'BooleanField' %}
+        <div class="eld-row">
+            {% if field.label is defined and field.label.text %}
+                <dt class="menu-item">
+                {{ field.label(class="label") }}
+            {% endif %}
+            {{ field(class="default-input mx-4", tabindex=1, **kwargs) | safe }}
+        </div>
+
+    {% else %}
+        {% if field.label is defined and field.label.text %}
+            <dt class="menu-items">
+            {{ field.label(class="label") }}
+        {% endif %}
+        <div class="inputs">
+            {{ field(class="input", tabindex=1, **kwargs) | safe }}
+        </div>
+    {% endif %}
+
+{% if field.errors %}
+    <ul>
+        {% for error in field.errors %}
+            <li class="eror">{{ error }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+{% endmacro %}

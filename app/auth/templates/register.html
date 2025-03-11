@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Реєстрація{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    {% from "render_field.html" import render_field %}
+
+    <div class="log-form">
+                <h1 class="auth-header">Реєстрація</h1>
+                <form action="{{ url_for('auth.register') }}" method="POST" class="form">
+                    {{ form.hidden_tag() }}
+
+                    <div class="menu-item">
+                        {{ render_field(form.username, placeholder="Ім'я користувача") }}
+                    </div>
+                    <div class="menu-item">
+                        {{ render_field(form.email, placeholder="Електронна пошта") }}
+                    </div>
+                    <div class="menu-item">
+                        {{ render_field(form.password, placeholder="Пароль") }}
+                    </div>
+                    <div class="menu-item">
+                        {{ render_field(form.confirm_password, placeholder="Повторіть пароль") }}
+                    </div>
+                    <div class="g-recaptcha" data-sitekey="6LcYS8sqAAAAAJbS50QsBi20J5qb59_pLjbBfVCM"></div>
+                    <button type="submit" class="btn-auth">Зареєструватися</button>
+                    <div class="auth-text">
+                        <p>Вже зареєстровані?</p>
+                        <a href=" {{ url_for('auth.login') }} ">Увійти</a>
+                    </div>
+                </form>
+            </div>
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+{% endblock %}

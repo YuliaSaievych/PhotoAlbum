@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Введіть OTP{% endblock %}
+
+{% block content %}
+    <h2>Перевірка OTP</h2>
+    <form method="POST">
+        {{ form.csrf_token }}
+        {{ form.otp.label }} {{ form.otp(class="form-control") }}
+        <br>
+        <button class="btn btn-primary">Підтвердити</button>
+    </form>
+{% endblock %}

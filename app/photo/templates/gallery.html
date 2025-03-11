@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+
+{% block title %} Галерея {% endblock %}
+
+{% block content %}
+
+<div class="mainer">
+    <div class="list-folder">
+<details>
+    <summary>
+        <a href="{{ url_for('photo.gallery', folder_id=main_folder.id) }}" class="folder">
+            {{ main_folder.name }}
+        </a>
+    </summary>
+    <div>
+        {% if all_folders %}
+            {% for folder in all_folders %}
+                <div class="folder-container">
+                    <a href="{{ url_for('photo.gallery', folder_id=folder.id) }}" class="folder">
+                        {{ folder.name }}
+                    </a>
+                    {% if folder.subfolders %}
+                        <ul id="folder-{{ folder.id }}" class="folder-children" style="display: none;">
+                            {% for subfolder in folder.subfolders %}
+                                <li>
+                                    <a href="{{ url_for('photo.gallery', folder_id=subfolder.id) }}">
+                                        {{ subfolder.name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+        {% endif %}
+    </div>
+    <div>
+        {% if current_folder.subfolders %}
+            <div class="subfolders">
+                <ul>
+                    {% for subfolder in current_folder.subfolders %}
+                        <li>
+                            <a href="{{ url_for('photo.gallery', folder_id=subfolder.id) }}">
+                                {{ subfolder.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</details>
+<details>
+    <summary>Поширені папки</summary>
+    <div>
+        {% if shared_folders %}
+            {% for folder in shared_folders %}
+                <div class="shared-folder">
+                    <a href="{{ url_for('photo.gallery', folder_id=folder.id) }}" class="folder shared-folder">
+                        {{ folder.name }} (Поширено)
+                    </a>
+                    {% if folder.subfolders %}
+                        <ul id="folder-{{ folder.id }}" class="folder-children" style="display: none;">
+                            {% for subfolder in folder.subfolders %}
+                                <li>
+                                    <a href="{{ url_for('photo.gallery', folder_id=subfolder.id) }}">
+                                        {{ subfolder.name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>Ця папка не має підпапок.</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+        {% endif %}
+    </div>
+</details>
+    </div>
+    <div class="main-photo">
+        <div class="header-gallery">
+            <div class="current-folder">
+                <h1> {{ current_folder.name }} </h1>
+                <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#321832"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h240l80 80h320q33 0 56.5 23.5T880-640v400q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H447l-80-80H160v480Zm0 0v-480 480Z"/></svg>
+            </div>
+            <div class="header-end">
+    {% if current_folder.name != "Основна" %}
+        <svg class="icon-button" xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#321832" id="folderFormBtn">
+            <path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
+        </svg>
+    {% endif %}
+</div>
+        </div>
+       <div class="photo">
+    {% if photos %}
+        {% for photo in photos %}
+            <div class="photo-container">
+                <img src="{{ photo.filename }}" alt="{{ photo.name }}" class="photo-in-gallery open-photo-link" data-photo="{{ photo.filename }}" data-id="{{ photo.id }}">
+                <form action="{{ url_for('photo.delete_photo', photo_id=photo.id) }}" method="POST">
+                    {{ form.csrf_token }}
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                    <button type="submit" class="btn-delete-photo">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#321832">
+                            <path d="M267.33-120q-27.5 0-47.08-19.58-19.58-19.59-19.58-47.09V-740H160v-66.67h192V-840h256v33.33h192V-740h-40.67v553.33q0 27-19.83 46.84Q719.67-120 692.67-120H267.33Zm425.34-620H267.33v553.33h425.34V-740Zm-328 469.33h66.66v-386h-66.66v386Zm164 0h66.66v-386h-66.66v386Z"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Ще немає фото або папок? <a href="{{ url_for('photo.upload_photo') }}">Завантаж своє перше фото!</a></p>
+    {% endif %}
+</div>
+    </div>
+</div>
+
+<div class="form-add" id="folder-action" popover style="display: {% if show_recover_form %}block{% else %}none{% endif %};">
+    <div class="create-folder">
+        {% if current_folder %}
+            <a href="{{ url_for('photo.access_control', folder_id=current_folder.id) }}" class="create">Панель доступу</a>
+            <form action="{{ url_for('photo.delete_folder', folder_id=current_folder.id) }}" method="POST">
+                <button type="submit" class="create">Видалити папку</button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+
+
+    <div class="open-photo" id="view-photo" popover style="display: none">
+        <div class="back">
+            <a href="#" id="close-photo">
+                <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#321832">
+                    <path d="m287-446.67 240 240L480-160 160-480l320-320 47 46.67-240 240h513v66.66H287Z"/>
+                </svg>
+            </a>
+        </div>
+        <div class="view-photo">
+            <img src="" alt="Фото" class="photo-opened" id="view-photo-img">
+        </div>
+        <div class="icons">
+            <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#321832"><path d="m480-120.67-46.67-42q-104.18-95.08-172.25-164.04Q193-395.67 152.67-450.17q-40.34-54.5-56.5-99.16Q80-594 80-640q0-91.44 61.33-152.72 61.34-61.28 152-61.28 55.34 0 103.34 25.33 48 25.34 83.33 72.67 39.33-49.33 86.33-73.67 47-24.33 100.34-24.33 90.66 0 152 61.28Q880-731.44 880-640q0 46-16.17 90.67-16.16 44.66-56.5 99.16-40.33 54.5-108.41 123.46-68.07 68.96-172.25 164.04l-46.67 42Zm0-88.66q99.49-90.67 163.75-155.5Q708-429.67 745.67-478.17q37.66-48.5 52.66-86.42t15-75.31q0-64.1-41.33-105.77-41.33-41.66-105.18-41.66-50.02 0-92.59 29.83-42.56 29.83-65.56 81.5h-58q-22.34-51-64.9-81.17-42.57-30.16-92.59-30.16-63.85 0-105.18 41.66-41.33 41.67-41.33 105.88 0 37.46 15 75.62 15 38.17 52.66 87Q252-428.33 316.67-363.83q64.66 64.5 163.33 154.5Zm0-289Z"/></svg>
+            </a>
+            <a href="#" id="share-photo-link">
+                <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#321832"><path d="M684-80q-48.33 0-82.17-33.83Q568-147.67 568-196q0-7.33 4.33-32l-293-171.33q-16.18 16.56-37.42 25.94Q220.67-364 196-364q-48.33 0-82.17-33.83Q80-431.67 80-480t33.83-82.17Q147.67-596 196-596q24 0 45 9.03T278-562l294.33-170q-2-7.67-3.16-15.5Q568-755.33 568-764q0-48.33 33.83-82.17Q635.67-880 684-880t82.17 33.83Q800-812.33 800-764t-33.83 82.17Q732.33-648 684-648q-23.52 0-44.09-8.83-20.58-8.84-36.58-23.84L307-513.33q2.67 7.66 3.83 16.16 1.17 8.5 1.17 16.84 0 8.33-.83 15.5-.84 7.16-2.84 14.83L604-280q16-15 36.4-23.5 20.39-8.5 43.7-8.5 48.57 0 82.23 33.83Q800-244.33 800-196t-33.83 82.17Q732.33-80 684-80Zm.02-66.67q20.98 0 35.15-14.19 14.16-14.19 14.16-35.16 0-20.98-14.19-35.15-14.19-14.16-35.16-14.16-20.98 0-35.15 14.19-14.16 14.19-14.16 35.16 0 20.98 14.19 35.15 14.19 14.16 35.16 14.16Zm-488-284q20.98 0 35.15-14.19 14.16-14.19 14.16-35.16 0-20.98-14.19-35.15-14.19-14.16-35.16-14.16-20.98 0-35.15 14.19-14.16 14.19-14.16 35.16 0 20.98 14.19 35.15 14.19 14.16 35.16 14.16Zm488-284q20.98 0 35.15-14.19 14.16-14.19 14.16-35.16 0-20.98-14.19-35.15-14.19-14.16-35.16-14.16-20.98 0-35.15 14.19-14.16 14.19-14.16 35.16 0 20.98 14.19 35.15 14.19 14.16 35.16 14.16ZM684-196ZM196-480Zm488-284Z"/></svg>
+            </a>
+            <a href="#">
+                <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#321832"><path d="M480-315.33 284.67-510.67l47.33-48L446.67-444v-356h66.66v356L628-558.67l47.33 48L480-315.33ZM226.67-160q-27 0-46.84-19.83Q160-199.67 160-226.67V-362h66.67v135.33h506.66V-362H800v135.33q0 27-19.83 46.84Q760.33-160 733.33-160H226.67Z"/></svg>
+            </a>
+            <a href="#">
+                <svg class="icon-button" xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px" fill="#321832" id=""><path d="M480-160q-33 0-56.5-23.5T400-240q0-33 23.5-56.5T480-320q33 0 56.5 23.5T560-240q0 33-23.5 56.5T480-160Zm0-240q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm0-240q-33 0-56.5-23.5T400-720q0-33 23.5-56.5T480-800q33 0 56.5 23.5T560-720q0 33-23.5 56.5T480-640Z"/>
+            </svg>
+            </a>
+        </div>
+    </div>
+    <script>
+    document.querySelectorAll('details').forEach(details => {
+        details.addEventListener('toggle', function () {
+            const ul = this.querySelector('.folder-children');
+            if (ul) {
+                ul.style.display = this.open ? 'block' : 'none';
+            }
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+    const openPhotoLinks = document.querySelectorAll('.open-photo-link');
+    const viewPhoto = document.getElementById('view-photo');
+    const viewPhotoImg = document.getElementById('view-photo-img');
+    const closeButton = document.getElementById('close-photo');
+    const sharePhotoLink = document.getElementById('share-photo-link');
+
+    if (!openPhotoLinks || !viewPhoto || !viewPhotoImg || !closeButton || !sharePhotoLink) {
+        console.error("Один або кілька елементів не знайдені!");
+        return;
+    }
+
+
+    openPhotoLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log("Фото клікнуто!");
+            const photoSrc = link.dataset.photo;
+            const photoId = link.dataset.id;
+
+            viewPhotoImg.src = photoSrc;
+            sharePhotoLink.href = `/photo/share_photo/${photoId}`;
+            viewPhoto.style.display = 'flex';
+        });
+    });
+
+
+    closeButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log("Закриття модального вікна!");
+        viewPhoto.style.display = 'none';
+    });
+});
+    </script>
+{% endblock %}

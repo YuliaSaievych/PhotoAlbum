@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Change Data{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+
+    <h2>Change Data</h2>
+
+    <h3>User Information</h3>
+    <p>Welcome, {{ current_user.username }}!</p>
+    <p>Email: {{ current_user.email }}</p>
+
+    <form method="POST" action="{{ url_for('user.toggle_option') }}">
+        <button type="submit" class="btn btn-primary">
+            {% if current_user.option_enabled %} Disable Option {% else %} Enable Option {% endif %}
+        </button>
+    </form>
+
+    <div>
+        {% if current_user.image_file %}
+            <img style="height: 150px;" src="{{ url_for('static', filename='/images/' + current_user.image_file) }}">
+        {% else %}
+            <p>No profile image available</p><br>
+        {% endif %}
+    </div>
+
+    <br>
+    <hr>
+
+    <h3>Change Profile Picture</h3>
+    <form method="POST" action="{{ url_for('user.change_data') }}" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.profile_picture.label(class="form-control-label") }}
+            {{ form.profile_picture(class="form-control form-control-sm") }}
+        </div>
+        <br>
+        <button>Update Profile Picture</button>
+    </form>
+
+    <hr>
+
+    <h3>Update User Information</h3>
+    <form method="POST" action="{{ url_for('user.change_data') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.username.label(class="form-control-label") }}
+            {{ form.username(class="form-control form-control-sm", placeholder="Username") }}
+        </div>
+        <div class="form-group">
+            {{ form.email.label(class="form-control-label") }}
+            {{ form.email(class="form-control form-control-lg") }}
+        </div>
+        <br>
+        <button>Update Account Information</button>
+    </form>
+
+    <br>
+    <hr>
+
+    <h3>Change Password</h3>
+    <form method="POST" action="{{ url_for('user.change_data') }}">
+        {{ password_form.hidden_tag() }}
+        <div class="form-group">
+            {{ password_form.old_password.label(class="form-control-label") }}
+            {{ password_form.old_password(class="form-control form-control-lg") }}
+        </div>
+        <div class="form-group">
+            {{ password_form.new_password.label(class="form-control-label") }}
+            {{ password_form.new_password(class="form-control form-control-lg") }}
+        </div>
+        <div class="form-group">
+            {{ password_form.confirm_new_password.label(class="form-control-label") }}
+            {{ password_form.confirm_new_password(class="form-control form-control-lg") }}
+        </div>
+        <br>
+        <button>Change Password</button>
+    </form><br><br><br><br><br><br><br><br><br>
+
+{% endblock %}
